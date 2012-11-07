@@ -1,0 +1,49 @@
+from .views import View, Redirect
+from .views import Viewmodel
+from . import models
+from django.shortcuts import get_object_or_404
+from django.contrib.auth.decorators import login_required
+
+class WholesalerItem(Viewmodel):
+    model = models.Item
+    fields = ['cost', 'wh_markup']
+
+    @property
+    def price(self):
+        return self.cost + self.wh_markup
+
+class RetailItem(Viewmodel):
+    model = models.Foo
+    exclude = ['wh_markup']
+
+    @property
+    def price(self):
+        return self.cost + self.retail_markup
+
+class ItemView(View):
+    viewmodels = { 'item' : RetailItem }
+    template_name = 'item.html'
+
+    def init_request(self, request=None, item_id=None, *args, **kwargs):
+        try:
+            profile = request.user.get_profile()
+            if profile.type == 'wholesaler':
+                self.viewmodels['item'] = WholesalerItem
+        except models.Profile.DoesNotExist: pass
+        if not item_id:
+            raise Redirect("item_list")
+        item = get_object_or_404(models.Item, pk=item_id)
+        return dict(item=item)
+
+    def get(self, request=None, item=None, *args, **kwargs):
+        return dict(item=item)
+
+    @login_required
+    def post(self, request=None, item=None, *args, **kwargs):
+        if 'cart' not in request.session:
+            request.session['cart'] = models.Cart()
+        request.session['cart'].add_item(item)
+        raise Redirect("cart")
+
+
+

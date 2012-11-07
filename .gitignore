@@ -1,0 +1,10 @@
+*.pyc
+*.swp
+*.swo
+*.~1~
+*.py~
+*.html~
+local_settings.py
+dev.db
+*.js~
+django_viewmodels.egg-info
