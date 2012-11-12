@@ -91,6 +91,7 @@ class View(DjangoView):
             if addtl_kwargs:
                 kwargs.update(addtl_kwargs)
             context = handler(*args, request=request, data=data, **kwargs)
+            if not context: context = {}
         except Redirect, r:
             return redirect(r.redirect, *r.redirect_args, **r.redirect_kwargs)
         except APIError, apie:
