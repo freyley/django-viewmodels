@@ -9,6 +9,7 @@ Automatic viewmodel conversion for django class-based views
 ** define get, post, put, delete as methods to handle those requests, return a context dictionary
 ** define init_request as a generic method to handle the beginning of all requests
 *** init_request can return a dictionary, whose values will be passed to get/post/whoever
+*** init_request returned dictionary will be added to template context
 ** define template_name or json
 *** template_name will cause context dictionaries to be rendered to that template
 *** json will cause context dictionaries to be rendered to json
