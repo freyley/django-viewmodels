@@ -32,7 +32,7 @@ class View(DjangoView):
           wrapped around the original objects
      * define init_request(self, *args, **kwargs) to get access to the request before
           it's passed on to get/post (for setup that's consistent between them).
-          return a dictionary and it will be added to kwargs for get, post, etc
+          return a dictionary and it will be added to kwargs for get, post, etc, and also added to the context for the template
      * override render_template to change the way the context is converted into an http response if template_name is set
      * override render_json to change the way the context is converted into an http response if json is set
 
@@ -92,6 +92,8 @@ class View(DjangoView):
                 kwargs.update(addtl_kwargs)
             context = handler(*args, request=request, data=data, **kwargs)
             if not context: context = {}
+            if addtl_kwargs:
+                context.update(addtl_kwargs)
         except Redirect, r:
             return redirect(r.redirect, *r.redirect_args, **r.redirect_kwargs)
         except APIError, apie:
