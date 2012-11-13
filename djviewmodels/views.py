@@ -91,6 +91,10 @@ class View(DjangoView):
             if addtl_kwargs:
                 kwargs.update(addtl_kwargs)
             context = handler(*args, request=request, data=data, **kwargs)
+            # bail out early if you return an HttpResponse
+            if isinstance(context, HttpResponse):
+                return context
+
             if not context: context = {}
             if addtl_kwargs:
                 context.update(addtl_kwargs)
@@ -101,10 +105,6 @@ class View(DjangoView):
                                 mimetype="application/json")
             resp.status_code = apie.code
             return resp
-
-        # bail out early if you return an HttpResponse
-        if isinstance(context, HttpResponse):
-            return context
 
         # translate viewmodels
         if getattr(self, 'viewmodels'):
