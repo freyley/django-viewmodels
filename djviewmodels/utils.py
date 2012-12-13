@@ -10,7 +10,7 @@ class BetterJSONEncoder(simplejson.JSONEncoder):
         if hasattr(obj, '__json__'):
             return obj.__json__()
         if isinstance(obj, Decimal):
-            return "%d" % obj
+            return str(obj)
         if isinstance(obj, datetime.date):
             return obj.isoformat()
         return simplejson.JSONEncoder.default(self, obj)
