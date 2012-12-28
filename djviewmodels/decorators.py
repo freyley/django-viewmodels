@@ -17,6 +17,9 @@ def viewmodel_wrap(cls):
         return wrap
     return fnc
 
+# Memoized here to be useful, copied from:
+# http://wiki.python.org/moin/PythonDecoratorLibrary
+
 import collections
 import functools
 
