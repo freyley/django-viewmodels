@@ -15,11 +15,12 @@ Automatic viewmodel conversion for django class-based views
 *** json will cause context dictionaries to be rendered to json
 
 * Automatic viewmodel extension of models:
-** define receive_single_instance to have individual viewmodels wrapped around individual models
+** define wrap_each to have individual viewmodels wrapped around individual models
 *** __getattr__ will look inside the instance for fields
 *** define fields to specify which fields to allow automatic retrieval of
 *** define exclude to exclude fields
-** define receive_multiple_instances to have the viewmodel wrap around the whole list
-** define receive_custom to receive the list or dictionary as args/kwargs
+** define wrap_collection to have the viewmodel wrap around the whole list
+
+* deprecated receive_single_instance and receive_multiple_instances still functional until v1.0
 
 See the tests for more information and usage
