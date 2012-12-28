@@ -111,7 +111,7 @@ class View(DjangoView):
         if getattr(self, 'viewmodels'):
             for name, cls in self.viewmodels.items():
                 if name in context:
-                    utils._viewmodel_instantiate(cls, context[name])
+                    context[name] = utils._instantiate_viewmodel(cls, context[name], request=request)
 
         # convert context to a response
         if self.template_name:

@@ -16,7 +16,7 @@ class BetterJSONEncoder(simplejson.JSONEncoder):
         return simplejson.JSONEncoder.default(self, obj)
 
 
-def _viewmodel_instantiate(cls, obj):
+def _instantiate_viewmodel(cls, obj, request=None):
     """
     This class instantiates viewmodels around objects. It is the class that
     pays attention to whether a viewmodel should wrap an entire collection of objects
@@ -27,11 +27,11 @@ def _viewmodel_instantiate(cls, obj):
 
     """
     if getattr(cls, "wrap_collection", False):
-        return cls(obj)
+        return cls(obj, request=request)
     else:
         if getattr(obj,'__iter__', False):
-            return [ cls(o) for o in obj ]
+            return [ cls(o, request=request) for o in obj ]
         else:
-            return cls(obj)
+            return cls(obj, request=request)
 
     # TODO: some kind of self.custom setting...??? a constructor?

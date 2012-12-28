@@ -10,11 +10,11 @@ class Item(object):
 
 class ItemViewmodel(Viewmodel):
     model = Item
-    receive_single_instance = True
-    
+    wrap_each = True
+
 class WholesalerItem(Viewmodel):
     model = Item
-    receive_single_instance = True
+    wrap_each = True
     fields = ['cost', 'wh_markup']
     
     @property
@@ -23,12 +23,22 @@ class WholesalerItem(Viewmodel):
 
 class RetailItem(Viewmodel):
     model = Item
-    receive_single_instance = True
+    wrap_each = True
     exclude = ['wh_markup']
 
     @property
     def price(self):
         return self.cost + self.retail_markup
+
+class ItemAggregate(Viewmodel):
+    wrap_collection = True
+    model = Item
+
+    def total_price(self):
+        total = 0.0
+        for item in self.instances:
+            total += item.cost
+        return total
 
 class ItemView(View):
     viewmodels = { }
@@ -55,4 +65,16 @@ class ItemView(View):
         raise Redirect("cart")
 
 
+class CartView(View):
+    template_name = 'cart.html'
+    viewmodels = dict(
+            items = ItemViewmodel,
+            cart_total = ItemAggregate,
+    )
+
+    def get(self, request=None, *args, **kwargs):
+        items = request.session.get("cart")
+        return dict(
+                items=items,
+                cart_total=items,)
 
