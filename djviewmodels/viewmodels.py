@@ -8,20 +8,32 @@ class Viewmodel(object):
     receive_custom = False
 
     def __init__(self, *args, **kwargs):
-        if self.receive_single_instance:
+        # TODO: this block is for backwards compatibility. Remove it for 1.0.
+        self.__fix_for_backwards_compatibility__()
+
+        # TODO: raise an error if self.wrap_collection AND self.wrap_each are both true.
+
+        if getattr(self, "wrap_each", False):
             if not args:
-                raise ViewmodelError("Must pass an instance to a single instance viewmodel")
+                raise ViewmodelError("Must pass at least one instance to a 'wrap_each' viewmodel")
             self.instance = args[0]
-        elif self.receive_multiple_instances:
+
+        elif getattr(self, "wrap_collection", False):
             if not args:
-                raise ViewmodelError("Must pass instances to a multiple instance viewmodel")
+                raise ViewmodelError("Must pass at least one argument to a 'wrap_collection' viewmodel")
             if len(args) == 1 and isinstance(args[0], query.QuerySet):
                 args = args[0]
             self.instances = args
-        elif self.receive_custom:
-            self.custom_args = args
-            self.custom_kwargs = kwargs
+
+        # TODO: handle custom stuff
+
         self.request = kwargs.get("request")
+
+    def __fix_for_backwards_compatibility__(self):
+        if getattr(self, "recieve_multiple_instances", False):
+            self.wrap_each = True
+        if getattr(self, "recieve_single_instance", False):
+            self.wrap_collection = True
 
     def __json__(self):
         # TODO: return a json implementation. Perhaps use self.json_fields?
@@ -34,7 +46,7 @@ class Viewmodel(object):
 
         if self.receive_single_instance:
             instance = self.__dict__['instance']
-            
+
             try:
                 attr = getattr(instance, attrName)
                 try:
@@ -60,5 +72,4 @@ class Viewmodel(object):
                 if exclude and attrName not in exclude:
                     return attr
             except AttributeError: pass
-        raise AttributeError(attrName + " not found in " + str(self))    
-
+        raise AttributeError(attrName + " not found in " + str(self))

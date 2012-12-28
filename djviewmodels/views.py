@@ -5,6 +5,7 @@ from django.http import HttpResponse
 from djviewmodels import utils
 from django.utils import simplejson
 
+
 class Redirect(Exception):
     def __init__(self, *args, **kwargs):
         self.redirect = args[0]
@@ -110,18 +111,7 @@ class View(DjangoView):
         if getattr(self, 'viewmodels'):
             for name, cls in self.viewmodels.items():
                 if name in context:
-                    if getattr(cls, "receive_multiple_instances", False):
-                        # TODO: check for multiple nesting and create multiple viewmodels
-                        context[name] = cls(context[name])
-                    elif getattr(cls, "receive_single_instance", False):
-                        if getattr(context[name],'__iter__', False):
-                            context[name] = [ cls(obj) for obj in context[name]]
-                        else:
-                            context[name] = cls(context[name])
-                    elif getattr(cls, "receive_custom", False):
-                        context[name] = cls(context[name])
-
-
+                    utils._viewmodel_instantiate(cls, context[name])
 
         # convert context to a response
         if self.template_name:
