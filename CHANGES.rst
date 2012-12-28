@@ -5,4 +5,4 @@
 0.1.7: bug fix in BetterJSONEncoder
 0.2.0: now support wrap_each and wrap_collection instead of receive_...
        viewmodel_wrap decorator allows you to wrap the output of a viewmodel function into further viewmodels
-
+0.2.1: memoize added
