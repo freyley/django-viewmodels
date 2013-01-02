@@ -42,7 +42,7 @@ class Viewmodel(object):
         # TODO: handle custom stuff
         self.request = kwargs.get("request")
 
-    def __nonzero__():
+    def __nonzero__(self):
         if getattr(self, 'wrap_each', False):
             if self.instance:
                 return True

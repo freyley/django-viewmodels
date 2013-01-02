@@ -4,7 +4,7 @@ import os.path
 
 setup(
     name='django-viewmodels',
-    version='0.2.2',
+    version='0.2.3',
     description='Class based views for Django with automatic viewmodel rendering',
     author='Jeff Schwaber, Chris Pitzer, LoFi Art',
     author_email='freyley@gmail.com',

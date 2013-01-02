@@ -7,3 +7,4 @@
        viewmodel_wrap decorator allows you to wrap the output of a viewmodel function into further viewmodels
 0.2.1: memoize added
 0.2.2: support truth value testing on viewmodels wrapped around None
+0.2.3: typo bug
