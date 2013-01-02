@@ -42,6 +42,16 @@ class Viewmodel(object):
         # TODO: handle custom stuff
         self.request = kwargs.get("request")
 
+    def __nonzero__():
+        if getattr(self, 'wrap_each', False):
+            if self.instance:
+                return True
+            return False
+        if getattr(self, 'wrap_collection', False):
+            if self.instances:
+                return True
+            return False
+        return True
     def __fix_for_backwards_compatibility__(self):
         if getattr(self, "receive_multiple_instances", False):
             self.wrap_each = True
