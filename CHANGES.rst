@@ -8,3 +8,4 @@
 0.2.1: memoize added
 0.2.2: support truth value testing on viewmodels wrapped around None
 0.2.3: typo bug
+0.3.0: massive rewrite of __getattr__ (actually works most of the time now)

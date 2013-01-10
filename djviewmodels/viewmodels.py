@@ -17,7 +17,6 @@ class Viewmodel(object):
         self.__fix_for_backwards_compatibility__()
 
         # TODO: raise an error if self.wrap_collection AND self.wrap_each are both true.
-
         self.wrap_each = getattr(self, "wrap_each", False)
         self.wrap_collection = getattr(self, "wrap_collection", False)
 
@@ -54,39 +53,32 @@ class Viewmodel(object):
         return True
     def __fix_for_backwards_compatibility__(self):
         if getattr(self, "receive_multiple_instances", False):
-            self.wrap_each = True
-        if getattr(self, "receive_single_instance", False):
             self.wrap_collection = True
+        if getattr(self, "receive_single_instance", False):
+            self.wrap_each = True
 
     def __json__(self):
         # TODO: return a json implementation. Perhaps use self.json_fields?
         raise NotImplementedError("You must define __json__ if you want your viewmodel to be converted into json")
 
     def __getattr__(self, attrName):
-
-        if attrName in self.__dict__:
-            return self.__getitem__(attrName)
-
-        if self.wrap_each:
-            instance = self.__dict__.get('instance', None)
-
+        if attrName in ('wrap_each', 'wrap_collection', 
+                        'receive_multiple_instances', 'receive_single_instance', 'receive_custom', 
+                        'instance',
+                        'fields', 'exclude',
+                        ):
+            pass
+        elif self.wrap_each and self.instance:
             try:
-                attr = getattr(instance, attrName)
+                attr = getattr(self.instance, attrName)
                 try:
                     fields = self.fields
                 except AttributeError:
-                    try:
-                        fields = self.__dict__['fields']
-                    except KeyError:
-                        fields = None
-
+                    fields = False
                 try:
                     exclude = self.exclude
                 except AttributeError:
-                    try:
-                        exclude = self.__dict__['exclude']
-                    except KeyError:
-                        exclude = None
+                    exclude = False
 
                 if not fields and not exclude:
                     return attr
