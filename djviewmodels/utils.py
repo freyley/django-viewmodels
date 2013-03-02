@@ -35,3 +35,9 @@ def _instantiate_viewmodel(cls, obj, request=None):
             return cls(obj, request=request)
 
     # TODO: some kind of self.custom setting...??? a constructor?
+
+def vm_replace(cls, obj_or_list, request=None):
+    if type(cls) == str:
+        # TODO: import the string as a class
+        pass
+    return _instantiate_viewmodel(cls, obj_or_list, request=request)

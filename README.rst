@@ -23,4 +23,8 @@ Automatic viewmodel conversion for django class-based views
 
 * deprecated receive_single_instance and receive_multiple_instances still functional until v1.0
 
+* viewmodel replacement function and decorator can be used in viewmodels or views without the class based view of django viewmodels:
+** djviewmodels.utils.vm_replace(cls, obj_or_list, request=None) accepts a viewmodel class, an object or list, and an optional request, and returns viewmodels
+** djviewmodels.decorators.viewmodel_wrap(cls) wraps a function that returns some value and turns that value into cls-based viewmodels. Looks for self.request on methods.
+
 See the tests for more information and usage

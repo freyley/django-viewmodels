@@ -1,5 +1,14 @@
 from djviewmodels.utils import _instantiate_viewmodel
 
+def ipdb_on_error(fn):
+    def internal(*args, **kwargs):
+        try:
+            return fn(*args, **kwargs)
+        except Exception, e:
+            import ipdb; ipdb.set_trace()
+    return internal
+
+
 def viewmodel_wrap(cls):
     if type(cls) == str:
         # TODO: import the string as a class
