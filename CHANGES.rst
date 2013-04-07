@@ -12,3 +12,4 @@
 0.3.1: vm_replace function added to utils to support viewmodel use outside of viewmodel style views
 0.3.2: handle put better
 0.3.3: load data from request.body in case of json
+0.3.4: sometimes request.body has single quotes, but simplejson requires double quotes

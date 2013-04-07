@@ -91,7 +91,10 @@ class View(DjangoView):
         if request.body and self.json:
             try:
                 data = simplejson.loads(request.body)
-            except: pass
+            except:
+                try:
+                    data = simplejson.loads(request.body.replace("'", '"'))
+                except: pass
 
         # get a response context
         try:
