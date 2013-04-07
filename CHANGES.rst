@@ -10,3 +10,4 @@
 0.2.3: typo bug
 0.3.0: massive rewrite of __getattr__ (actually works most of the time now)
 0.3.1: vm_replace function added to utils to support viewmodel use outside of viewmodel style views
+0.3.2: handle put better
