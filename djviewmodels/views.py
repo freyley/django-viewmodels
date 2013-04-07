@@ -87,6 +87,11 @@ class View(DjangoView):
         else:
             handler = self.http_method_not_allowed
 
+        # try to load the data from request.body, in case we got a json data blob there instead
+        if request.body and self.json:
+            try:
+                data = simplejson.loads(request.body)
+            except: pass
 
         # get a response context
         try:
