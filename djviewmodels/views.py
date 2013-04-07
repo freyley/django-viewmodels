@@ -80,8 +80,10 @@ class View(DjangoView):
         # Check allowed methods
         if request.method.lower() in self.http_method_names:
             handler = getattr(self, request.method.lower(), self.http_method_not_allowed)
-            # TODO: does this properly handle delete and put?
-            data = getattr(request, request.method.upper())
+            if request.method.lower() == 'put':
+                data = request.POST
+            else:
+                data = getattr(request, request.method.upper(), {})
         else:
             handler = self.http_method_not_allowed
 
