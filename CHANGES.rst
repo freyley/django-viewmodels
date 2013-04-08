@@ -13,3 +13,4 @@
 0.3.2: handle put better
 0.3.3: load data from request.body in case of json
 0.3.4: sometimes request.body has single quotes, but simplejson requires double quotes
+0.3.5: don't return addtl_kwargs from init_request to the context if the view is json

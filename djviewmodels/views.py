@@ -107,7 +107,10 @@ class View(DjangoView):
                 return context
 
             if not context: context = {}
-            if addtl_kwargs:
+            # if we're passing to a template, it's safe to update context
+            # if we're passing to json, addtl_kwargs will get passed to the user
+            # which is unsafe.
+            if addtl_kwargs and not self.json: 
                 context.update(addtl_kwargs)
         except Redirect, r:
             return redirect(r.redirect, *r.redirect_args, **r.redirect_kwargs)
