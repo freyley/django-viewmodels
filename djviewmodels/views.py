@@ -76,25 +76,26 @@ class View(DjangoView):
 
     def dispatch(self, request, *args, **kwargs): # is it call?
         data=None
-
-        # Check allowed methods
-        if request.method.lower() in self.http_method_names:
-            handler = getattr(self, request.method.lower(), self.http_method_not_allowed)
-            if request.method.lower() == 'put':
-                data = request.POST
-            else:
-                data = getattr(request, request.method.upper(), {})
-        else:
-            handler = self.http_method_not_allowed
-
-        # try to load the data from request.body, in case we got a json data blob there instead
-        if request.body and self.json:
+        if self.json:
             try:
                 data = simplejson.loads(request.body)
             except:
                 try:
                     data = simplejson.loads(request.body.replace("'", '"'))
                 except: pass
+
+
+        # Check allowed methods
+        if request.method.lower() in self.http_method_names:
+            handler = getattr(self, request.method.lower(), self.http_method_not_allowed)
+            data2 = getattr(request, request.method.upper(), {})
+            if data and data.keys():
+                if data2 and data2.keys():
+                    data.update(data2) # TODO: ?
+            else:
+                data = data2
+        else:
+            handler = self.http_method_not_allowed
 
         # get a response context
         try:

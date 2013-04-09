@@ -13,6 +13,8 @@ class BetterJSONEncoder(simplejson.JSONEncoder):
             return str(obj)
         if isinstance(obj, datetime.date):
             return obj.isoformat()
+        if hasattr(obj, '__iter__'):
+            return [self.default(o) for o in obj]
         return simplejson.JSONEncoder.default(self, obj)
 
 
