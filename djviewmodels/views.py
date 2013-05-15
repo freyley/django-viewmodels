@@ -4,6 +4,7 @@ from django.views.generic import View as DjangoView
 from django.http import HttpResponse
 from djviewmodels import utils
 from django.utils import simplejson
+from django.db.models.query import QuerySet
 
 
 class Redirect(Exception):
@@ -42,7 +43,9 @@ class View(DjangoView):
     def __init__(self):
         self.template_name = getattr(self, 'template_name', None) or None
         self.json = getattr(self, 'json', None)
+        self.paginate = getattr(self, 'paginate', False)
         self.viewmodels = getattr(self, 'viewmodels', None)
+        self.remove_from_context = getattr(self, 'remove_from_context', [])
 
         if not self.template_name and not self.json:
             raise Exception("template_name or json must be defined") # TODO: better class
@@ -72,6 +75,33 @@ class View(DjangoView):
                             mimetype='application/json')
         resp.status_code = { "POST" : 201, "GET" : 200, "DELETE" : 204, "PUT" : 201 }[request.method]
         return resp
+
+
+    def paginate_objects(self, request, objects, dict_wrapper=None, items_per_page=10):
+        current_page = request.REQUEST.get("page", 1)
+
+        if isinstance(objects, QuerySet):
+            object_count = objects.count()
+        else:
+            object_count = len(objects)
+        page_count = (object_count/items_per_page)+1
+
+        if current_page < 1:
+            current_page = 1
+        elif current_page > page_count:
+            current_page = page_count
+        
+        max = items_per_page * current_page
+        min = max - 10
+        return dict(
+            meta = dict(
+                total_pages=page_count,
+                current_page=current_page,
+                count=object_count,
+                ),
+            objects=objects[min:max],
+        )
+
 
 
     def dispatch(self, request, *args, **kwargs): # is it call?
@@ -120,6 +150,18 @@ class View(DjangoView):
                                 mimetype="application/json")
             resp.status_code = apie.code
             return resp
+
+
+        # paginate before you translate viewmodels
+        if self.json:
+            if self.paginate and context.get('paginate', False):
+                new_context = self.paginate_objects(request, context.get(context['paginate']))
+                new_context.update(context)
+                del context[context['paginate']]
+                del context['paginate']
+                context = new_context
+            for name in self.remove_from_context:
+                del context[name]
 
         # translate viewmodels
         if getattr(self, 'viewmodels'):

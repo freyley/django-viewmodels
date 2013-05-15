@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='django-viewmodels',
-    version='0.3.6',
+    version='0.3.7',
     description='Class based views for Django with automatic viewmodel rendering',
     author='Jeff Schwaber, Chris Pitzer, LoFi Art',
     author_email='freyley@gmail.com',

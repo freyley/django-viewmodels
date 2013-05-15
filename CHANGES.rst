@@ -15,3 +15,4 @@
 0.3.4: sometimes request.body has single quotes, but simplejson requires double quotes
 0.3.5: don't return addtl_kwargs from init_request to the context if the view is json
 0.3.6: several changes to better support json -- betterjsonencoder supports lists better, look in request.body happens first
+0.3.7: support paginate option on json views, to paginate an object set
